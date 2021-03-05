@@ -24,5 +24,13 @@ const employeeSchema = mongoose.Schema({
     }
 })
 
-// const Register = 
-module.exports = mongoose.model("Register", employeeSchema)
+const userSchema = mongoose.Schema({
+    username: String,
+    useremail: String,
+    googleId: String,
+    thumbnail: String
+});
+
+module.exports = mongoose.model('user', userSchema);
+
+module.exports = mongoose.model("Register", employeeSchema);
