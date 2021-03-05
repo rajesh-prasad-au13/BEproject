@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" />
+    <title>Admin Login</title>
+    <link rel="stylesheet" href="styles2.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-light bg-light">
+        <a class="navbar-brand" href="#">
+            <img src="https://media-exp1.licdn.com/dms/image/C4D0BAQF8_tltlaNCkA/company-logo_200_200/0/1564162838121?e=2159024400&v=beta&t=KqzHHXQAjvbIhgJXuxklcfY3CbxFyjUWJu6T3TN4y18"
+                width="30" height="30" class="d-inline-block align-top" alt="" />
+            Employee Payroll Management
+        </a>
+        <button type="button" class="btn btn-dark">Login</button>
+    </nav>
+
+    <h2 class="text-center">Admin Register </h2>
+
+    <div class="container">
+        <div class="row text-white">
+            <div class="col-lg-6 col-sm-10 mx-auto">
+
+                <form class="justify-content-center" action="/admins" method='POST'>
+                    <div class="form-group">
+                        <label for="InputFirstName"></label>
+                        <input type="text" class="form-control" id="InputFirstName" name="firstname" placeholder="Enter First Name" required value = {{firstname}}>
+                        <span style="color: black">{{error.firstname}}</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="InputLastName"></label>
+                        <input type="text" class="form-control" id="InputLastName" name="lastname" placeholder="Enter Last Name" required value = {{lastname}}>
+                    </div>
+
+                    <!-- <div class="form-group">
+                            <label for="InputUserName">First Name</label>
+                            <input type="text" class="form-control" id="InputUserName" placeholder="Enter User Name" />
+                        </div> -->
+
+                    <div class="form-group">
+                        <label for="InputEmail">Email address</label>
+                        <input type="email" class="form-control" id="InputEmail" name="email" placeholder="Enter email" required value = {{email}}>
+                        <!-- <small id="emailHelp" class="form-text text-muted"
+                                        >We'll never share your email with anyone else.</small
+                                        > -->
+                    </div>
+
+                    <div class="form-group">
+                        <label for="InputPassword">Password</label>
+                        <input type="password" class="form-control" id="InputPassword" name="password" placeholder="Password" required value = {{password}}>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ConfirmPassword">Confirm Password</label>
+                        <input type="password" class="form-control" id="ConfirmPassword" name="confirm_password" placeholder="Confirm Password" 
+                        required value = {{confirm_password}}>
+                        <span style="color: black">{{error.password}}</span>
+                    </div>
+
+                    <button type="submit" class="btn btn-success ">Register</button>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
