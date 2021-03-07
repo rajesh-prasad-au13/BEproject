@@ -18,7 +18,7 @@
                 width="30" height="30" class="d-inline-block align-top" alt="" />
             Employee Payroll Management
         </a>
-        <button type="button" class="btn btn-dark">Login</button>
+        <button  type="button" class="btn btn-primary"><a style="color: black;" href="http://localhost:5000/login">Login</a></button>
     </nav>
 
     <h2 class="text-center">Admin Register </h2>
@@ -26,8 +26,8 @@
     <div class="container">
         <div class="row text-white">
             <div class="col-lg-6 col-sm-10 mx-auto">
-
-                <form class="justify-content-center" action="/admins" method='POST'>
+                {{!-- <button class="btn btn-primary" >LOGIN</a></button> --}}
+                <form class="justify-content-center" action="/signup" method='POST'>
                     <div class="form-group">
                         <label for="InputFirstName"></label>
                         <input type="text" class="form-control" id="InputFirstName" name="firstname" placeholder="Enter First Name" required value = {{firstname}}>

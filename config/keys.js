@@ -4,7 +4,7 @@ module.exports = {
         clientSecret: '4WaNtW-hNhHsca7SE-feq9TW'
     },
     mongodb:{
-        dbURI:'mongodb+srv://admin:admin@cluster0.bbmdu.mongodb.net/practice?retryWrites=true&w=majority'
+        dbURI:'mongodb://localhost:27017/employees'
     },
     session: {
         cookieKey: 'cookiesecretkey'

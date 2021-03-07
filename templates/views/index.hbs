@@ -1,13 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <style>
+        table{
+            text-align: center;
+        }
+        table, th, td {
+        border: 1px solid black;
+        }
+        table{
+            border-collapse: collapse;
+            width: 100%;
+        }
+    </style>
 </head>
+
 <body>
-    {{>navbar}}
-    <h1>This is my Index Page</h1>
+
+    <button type="button" class="btn btn-primary mr-0"  data-bs-container="body" data-bs-toggle="popover"
+        data-bs-placement="top" data-bs-content="Top popover">
+        <a style="color: black;" href="/add">ADD Employee</a>
+    </button>
+    <table class="m-2">
+        
+        <tr>
+            <th>
+                UserName
+            </th>
+            <th>
+                Email Id
+            </th>
+            <th>
+                Department
+            </th>
+            <th>
+                UPDATE
+            </th>
+            <th>
+                DELETE
+            </th>
+        </tr>
+  
+        <tr>
+            <td>
+                user1
+            </td>
+            <td>
+                raj@gmail.com
+            </td>
+            <td>
+                Backend
+            </td>
+            <td>
+                <button type="button" class="btn btn-secondary" data-bs-container="body" data-bs-toggle="popover"
+                data-bs-placement="right" data-bs-content="Right popover">
+                Update</button>
+            </td>
+            <td>
+                <button type="button" class="btn btn-warning" data-bs-container="body" data-bs-toggle="popover"
+                data-bs-placement="bottom" data-bs-content="Bottom popover">
+                Delete
+                </button>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                user1
+            </td>
+            <td>
+                raj@gmail.com
+            </td>
+            <td>
+                Backend
+            </td>
+            <td>
+                <button type="button" class="btn btn-secondary" data-bs-container="body" data-bs-toggle="popover"
+                data-bs-placement="right" data-bs-content="Right popover">
+                Update</button>
+            </td>
+            <td>
+                <button type="button" class="btn btn-warning" data-bs-container="body" data-bs-toggle="popover"
+                data-bs-placement="bottom" data-bs-content="Bottom popover">
+                Delete
+                </button>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                user1
+            </td>
+            <td>
+                raj@gmail.com
+            </td>
+            <td>
+                Backend
+            </td>
+            <td>
+                <button type="button" class="btn btn-secondary" data-bs-container="body" data-bs-toggle="popover"
+                data-bs-placement="right" data-bs-content="Right popover">
+                Update</button>
+            </td>
+            <td>
+                <button type="button" class="btn btn-warning" data-bs-container="body" data-bs-toggle="popover"
+                data-bs-placement="bottom" data-bs-content="Bottom popover">
+                Delete
+                </button>
+            </td>
+        </tr>
+    </table>
+    
+    
+    <!-- <button type="button" class="btn btn-secondary" data-bs-container="body" data-bs-toggle="popover"
+        data-bs-placement="left" data-bs-content="Left popover">
+        Popover on left
+    </button> -->
 </body>
+
 </html>

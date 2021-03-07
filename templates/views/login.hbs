@@ -1,4 +1,4 @@
-{{!-- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -19,7 +19,7 @@
                 width="30" height="30" class="d-inline-block align-top" alt="" />
             Employee Payroll Management
         </a>
-        <button type="button" class="btn btn-dark">Signup</button>
+        <button type="button" class="btn btn-dark"><a  style="color: cornsilk;" href="http://localhost:5000/signup">Signup</a> </button>
     </nav>
 
 
@@ -28,14 +28,15 @@
         <div class="row text-white">
             <div class="col-lg-6 col-sm-10 mx-auto">
                 <h3>Login</h3>
-                <form>
+                <form class="justify-content-center" action="/login" method='POST'>
                     <div class="form-group">
                         <label for="exampleInputEmail1">Email address</label>
-                        <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email" required>
+                        <input type="email" class="form-control" id="exampleInputEmail1" name="Email" 
+                        placeholder="Email" required value={{Email}} >
                     </div>
                     <div class="form-group">
                         <label for="exampleInputPassword1">Password</label>
-                        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" required>
+                        <input type="password" class="form-control" id="exampleInputPassword1" name="password"  placeholder="Password" required value={{password}}>
                     </div>
                     <button type="submit" class="btn btn-success mt-3">Login</button>
                 </form>
@@ -46,4 +47,4 @@
 
 </body>
 
-</html> --}}
+</html>

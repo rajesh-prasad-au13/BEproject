@@ -8,13 +8,28 @@ const passportSetup = require('./config/passport-setup');
 const mongoose = require('mongoose');
 const keys = require('./config/keys');
 const path = require('path')
+const employeeRouter = require('./controllers/employeeController')
+const exphbs = require('express-handlebars')
 const hbs = require('hbs')
 const bodyparser = require('body-parser')
-const mySchema = require("./src/models/schema")
+const mySchema = require("./src/models/adminschema")
 const dotenv = require("dotenv");
 dotenv.config();
+
+const router = express.Router()
+const cloudinary = require("./utils/cloudinary");
+const upload = require("./utils/multer");
+const Employee = require("./src/models/employeeschema");
+// const employeeGoogle= require("./src/models/employeeGoogleSigninSchema");
+
+require('./controllers/employeeController')
 require("./src/db/conn")
-const port = process.env.PORT || 3000
+// require('./src/db/db')
+const port = 5000
+
+var MongoClient = require('mongodb').MongoClient;
+
+// let users = []
 
 let admin = []
 
@@ -23,6 +38,7 @@ const template_path = path.join(__dirname, "./templates/views")
 const partials_path = path.join(__dirname, "./templates/partials")
 hbs.registerPartials(partials_path)
 
+// app.engine('hbs', exphbs({ extname: 'hbs', defaultLayout: 'mainLayout', layoutsDir: __dirname + '/views/layouts/' }));
 
 app.use(express.static(static_path))
 
@@ -30,7 +46,7 @@ app.set("view engine", "hbs")
 app.set('view engine', 'ejs');
 app.set("views", template_path)
 
-
+app.use('/employee', employeeRouter)
 app.use(bodyparser.json())
 app.use(bodyparser.urlencoded({extended:true})) 
 // Route
@@ -55,8 +71,66 @@ app.use('/profile', profileRoutes);
 
 // create home route
 app.get('/', (req, res) => {
-  res.render('home.ejs', { user: req.user });
+    // console.log(req)
+    res.render('home.ejs', { user: req.user });
 });
+
+app.get('/home', (req, res) => {
+    console.log(req.body)
+    var url = "mongodb://localhost:27017/";
+    MongoClient.connect(url, function(err, db) {
+    if (err) throw err;
+    var dbo = db.db("employees");
+    dbo.collection("registers").findOne({}, function(err, result) {
+        if (err) throw err;
+        console.log(result)
+        
+        //object to array
+        const propertyNames = Object.values(result);
+        console.log(propertyNames);
+        const data = {propertyNames}
+        
+        console.log(data)
+        res.render('home.hbs',data) 
+        
+        db.close()
+       });
+    });
+    // res.end() 
+});
+
+
+app.get('/login', (req, res) => {
+  res.render('login.hbs');
+});
+
+
+app.post('/login', (req,res) => {
+    console.log(req.body)
+    var url = "mongodb://localhost:27017/";
+    MongoClient.connect(url, function(err, db) {
+    if (err) throw err;
+    var dbo = db.db("employees");
+    dbo.collection("registers").findOne({}, function(err, result) {
+        if (err) throw err;
+        console.log(req.body.password, result.password)
+        if(result){
+            if(req.body.password == result.password){
+                console.log("Login Success")
+            }
+            else{
+                console.log("Login Failed")
+            }
+            db.close();
+        }
+        else{
+            console.log("No such User")
+            db.close();
+        }
+    });
+    });
+    res.end()
+} );
 
 
 app.get('/signup',(req,res) => {
@@ -72,31 +146,31 @@ app.get('/signup',(req,res) => {
 })
 
 
-app.post('/signup',(req,res) => {
-    console.log(__dirname+'/signup.hbs');
-    console.log(req.body);
-    const error = {}
-    const data = {
-        title:"SignUP",
-        ...req.body
+app.post('/signup', async (req,res) => {
+    try{
+        if(req.body.password == req.body.confirm_password){
+            const registerEmployee = new mySchema({
+                firstname : req.body.firstname,
+                lastname:req.body.lastname,
+                email:req.body.email,
+                password:req.body.password,
+                confirm_password:req.body.confirm_password
+            })
+            const result = await registerEmployee.save()
+            console.log(result,registerEmployee,req.body.firstname)
+            
+            res.status(201).render('signup.hbs')
+            // alert("Done");
+        }
+        else{
+            res.send("Password Mismatched")
+        }
     }
-    if(!req.body.firstname){
-        error.firstname = 'Please Enter First Name'
-        res.render(template_path+'/signup.hbs',{...data,error})    //.hbs extension is not required
-        return
+    catch(error){
+        res.status(400).send(error)
     }
-    if(req.body.password != req.body.confirm_password){
-        error.password = 'Password Mismatch'
-        data.password = ''
-        data.confirm_password = ''
-        res.render(template_path+'/signup.hbs',{...data,error})
-        return
-    }
-    admin.push(req.body);
-    console.log(req.body)
-    console.log('running here')
-    res.redirect('/admins')
-})
+} )
+
 
 app.get('/admins',(req,res) => {
     console.log(admin)
@@ -127,12 +201,52 @@ app.post('/admins', async (req,res) => {
     }
 })
 
-// app.get("/", (req,res) => {
-//     res.render("index.hbs")
-// })
+
+
+
+
+// router.get('/', (req, res) => {
+//     res.render("employee/add-edit-employee", {
+//         viewTitle: "Insert Employee"
+//     });
+// });
+
+
+// router.post("/employee", upload.single("image"), async (req, res) => {
+//   try {
+//     // Upload image to cloudinary
+//     console.log(req.body)
+//     // console.log(res)
+//     const result = await cloudinary.uploader.upload(req.file.path);
+//     // res.json(result)
+//     // Create new user
+//     // console.log(req.body)
+//     let employee = new Employee({
+//       firstname: req.body.firstname,
+//       lastname: req.body.lastname,
+//       email: req.body.email,
+//       phone: req.body.email,
+//       phone: req.body.address,
+//       pancard: req.body.pancard,
+//       cloudinary_id: result.secure_url,
+//       basicsalary: req.body.basicsalary,
+//       da: req.body.da,
+//       hra: req.body.hra,
+//       medical: req.body.medical,
+//       proftax: req.body.proftax,
+//       incometax: req.body.incometax,
+//       providentfund: req.body.providentfund
+//     });
+//     // Save user
+//     await employee.save();
+//     res.json(employee);
+//   } catch (err) {
+//     console.log(err);
+//   }
+// });
 
 app.listen(port, () => {
-  console.log(`Server running at ${port}`) //3000
+  console.log(`Server running at ${port}`) //5000
 })
 
 

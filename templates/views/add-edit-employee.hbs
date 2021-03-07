@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+        integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <link rel="stylesheet" href="../../public/css/styles.css">
+
+    {{!-- <title>Admin Login</title> --}}
+</head>
+
+<body class="bg">
+
+    <nav class="navbar navbar-light bg-light">
+        <a class="navbar-brand" href="#">
+            <img src="https://media-exp1.licdn.com/dms/image/C4D0BAQF8_tltlaNCkA/company-logo_200_200/0/1564162838121?e=2159024400&v=beta&t=KqzHHXQAjvbIhgJXuxklcfY3CbxFyjUWJu6T3TN4y18"
+                width="30" height="30" class="d-inline-block align-top" alt="" />
+            Employee Payroll Management
+        </a>
+        <button type="button" class="btn btn-dark">Signup</button>
+    </nav>
+
+    <h2 class="text-center">Employee Details</h2>
+
+    <div class="container">
+        <div class="row text-white">
+            <div class="col-6 mx-auto">
+                <h3>{{viewTitle}}</h3>
+                <form class="form-controller px-5" action="/employee" method="POST" autocomplete="off"
+                    enctype="multipart/form-data">
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="InputFirstName">First Name</label>
+                                <input type="text" class="form-control" id="InputFirstName"
+                                    placeholder="Enter First Name" name="firstname" value={{firstname}}>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="InputLastName">Last Name</label>
+                                <input type="text" class="form-control" id="InputLastName" placeholder="Enter Last Name" name="lastname" value={{lastname}}>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="InputEmail">Email address</label>
+                                <input type="email" class="form-control" id="InputEmail" placeholder="Enter email" name="email" value={{email}}>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="InputPhone">Phone Number</label>
+                                <input type="number" class="form-control" id="InputPhone"
+                                    placeholder="Enter Phone Number" maxlength="10" name="phone" value={{phone}}>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="InputAddress">Address</label>
+                        <textarea class="form-control rounded-0" id="InputAddress" placeholder="Enter Address" rows="2" name="address" value={{address}}></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="txtPANCard">PAN Card</label>
+                                <input name="txtPANCard" type="text" id="txtPANCard" class="form-control"
+                                    placeholder="Enter PAN Number" name="pancard" value={{pancard}}/>
+                                <!-- <span id="lblPANCard" class="error">Invalid PAN Number</span> -->
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="InputPhoto">Upload Picture</label>
+                                <input type="file" name="image" class="form-control" id="InputPhoto" value={{image}}>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="InputBasic">Basic Salary</label>
+                                <input type="number" class="form-control" id="InputBasic"
+                                    placeholder="Enter Basic Salary" maxlength="6" name="basicsalary" value={{bascisalary}}>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="InputDA">Dearness Allowance</label>
+                                <input type="number" class="form-control" id="InputDA" placeholder="Enter DA"
+                                    maxlength="4" name="da" value={{da}}>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="InputHRA">House Rental Allowance</label>
+                                <input type="number" class="form-control" id="InputHRA" placeholder="Enter HRA"
+                                    maxlength="4" name="hra" value={{hra}}>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="InputMedical">Medical Allowance</label>
+                                <input type="number" class="form-control" id="InputMedical" placeholder="Enter Medical"
+                                    maxlength="5" name="medical" value={{medical}}>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="InputProfTax">Professinal Tax</label>
+                                <input type="number" class="form-control" id="InputProfTax"
+                                    placeholder="Enter Professional Tax" maxlength="6" name="proftax" value={{proftax}}>
+                            </div>
+                            <div class="form-group dropdown">
+                                <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Income Tax
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <a class="dropdown-item" href="#">10%</a>
+                                    <a class="dropdown-item" href="#">20%</a>
+                                    <a class="dropdown-item" href="#">30%</a>
+                                </div>
+
+                                {{!-- <input type="radio" id="male" name="incometax" value="10">
+                                <label for="male">10%</label><br>
+                                <input type="radio" id="female" name="incometax" value="20">
+                                <label for="female">20%</label><br>
+                                <input type="radio" id="other" name="incometax" value="30">
+                                <label for="other">30%r</label> --}}
+                            </div>
+
+                            <div class="form-group">
+                                <label for="InputBasic">Provident Fund</label>
+                                <input type="number" class="form-control" id="InputMedical"
+                                    placeholder='Enter Provident Fund' maxlength="5" name="providentfund" value={{providentfund}}>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-success btn-block"><i class="fa fa-database"
+                            aria-hidden="true"></i>
+                        Save</button>
+
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

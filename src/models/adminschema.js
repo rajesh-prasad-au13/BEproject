@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const employeeSchema = mongoose.Schema({
+const adminSchema = mongoose.Schema({
     firstname:{
         type:String,
         require:true
@@ -31,6 +31,6 @@ const userSchema = mongoose.Schema({
     thumbnail: String
 });
 
-module.exports = mongoose.model('user', userSchema);
+module.exports = mongoose.model('user', userSchema);    //google login
 
-module.exports = mongoose.model("Register", employeeSchema);
+// module.exports = mongoose.model("Register", adminSchema);     //form login or signup
