@@ -13,8 +13,15 @@ const exphbs = require('express-handlebars')
 const hbs = require('hbs')
 const bodyparser = require('body-parser')
 const mySchema = require("./src/models/adminschema")
+
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken');
+const { check, validationResult } = require('express-validator')
+
 const dotenv = require("dotenv");
 dotenv.config();
+
+const auth = require('./routes/authLogin')
 
 const router = express.Router()
 const cloudinary = require("./utils/cloudinary");
@@ -98,6 +105,31 @@ app.get('/home', (req, res) => {
     });
     // res.end() 
 });
+app.get('/see', auth, (req, res) => {
+    // console.log(req.header.token)
+    res.json("Welcome to Profile Section")
+    // console.log(req.body)
+    // var url = "mongodb://localhost:27017/";
+    // MongoClient.connect(url, function(err, db) {
+    // if (err) throw err;
+    // var dbo = db.db("employees");
+    // dbo.collection("registers").findOne({}, function(err, result) {
+    //     if (err) throw err;
+    //     console.log(result)
+        
+    //     //object to array
+    //     const propertyNames = Object.values(result);
+    //     console.log(propertyNames);
+    //     const data = {propertyNames}
+        
+    //     console.log(data)
+    //     res.render('home.hbs',data) 
+        
+    //     db.close()
+    //    });
+    // });
+    // res.end() 
+});
 
 
 app.get('/login', (req, res) => {
@@ -105,31 +137,61 @@ app.get('/login', (req, res) => {
 });
 
 
-app.post('/login', (req,res) => {
+app.post('/login',(req,res) => {
+
     console.log(req.body)
+    console.log(req.header.token)
     var url = "mongodb://localhost:27017/";
     MongoClient.connect(url, function(err, db) {
     if (err) throw err;
     var dbo = db.db("employees");
     dbo.collection("registers").findOne({}, function(err, result) {
         if (err) throw err;
+
         console.log(req.body.password, result.password)
         if(result){
-            if(req.body.password == result.password){
-                console.log("Login Success")
-            }
-            else{
-                console.log("Login Failed")
-            }
+            jwt.sign(
+                { result: { email: result.email } },
+                'jwt_secret',
+                (err, token) => {
+                    if (err) throw err;
+                    console.log('token',token)
+                    req.header.token = token
+                    // console.log('req.header',req.header)
+                    console.log('heree')
+                    res.status(200).json({
+                        // req.header.token:token,
+                        data: {token},
+                        errors:[],
+                        message: 'Loggin success!!'
+                    })
+                }
+            )
+            // if(req.body.password == result.password){
+            //     // console.log("Login Success")
+                
+            // }
+            // else{
+            //     // console.log("Login Failed")
+            //     res.status(200).json({
+            //         data: {},
+            //         // errors:[],
+            //         message: 'Loggin failed'
+            //     })
+            // }
             db.close();
         }
         else{
-            console.log("No such User")
+            res.status(200).json({
+                data: {},
+                // errors:[],
+                message: 'No such User'
+            })
             db.close();
         }
     });
     });
-    res.end()
+    // res.end()
 } );
 
 
@@ -147,20 +209,72 @@ app.get('/signup',(req,res) => {
 
 
 app.post('/signup', async (req,res) => {
+    // if (!errors.isEmpty()) {
+    //     return res.status(400).json({
+    //         data: {},
+    //         errors: errors.array(),
+    //         message: 'Unable to create user'
+    //     });
+    // }
+    // try {
+    //     let user = await User.findOne({ email: req.body.email });
+    //     if (user) {
+    //         return res.status(400).json({
+    //             data: {},
+    //             errors: [{
+    //                 value: req.body.email,
+    //                 msg: "User already exists.",
+    //                 param: "email",
+    //                 location: "body"
+    //             }],
+    //             message: 'Unable to create user'
+    //         })
+    //     }
+    //     user = new User({
+    //         firstName: req.body.firstName,
+    //         lastName: req.body.lastName || '',
+    //         email: req.body.email
+    //     });
+    //     const salt = await bcrypt.genSalt(10);
+    //     user.password = await bcrypt.hash(req.body.password, salt);
+
+    //     await user.save();
+
+    //     res.status(200).json({
+    //         data: user,
+    //         errors: [],
+    //         message: 'Signed Up successfully!!'
+    //     });
+    // } catch (e) {
+    //     console.log(e.message);
+    //     res.status(500).send('Error in Saving');
+    // }
+    console.log(req.body,req.body.password == req.body.confirm_password)
     try{
         if(req.body.password == req.body.confirm_password){
+            console.log("here")
             const registerEmployee = new mySchema({
                 firstname : req.body.firstname,
                 lastname:req.body.lastname,
                 email:req.body.email,
-                password:req.body.password,
-                confirm_password:req.body.confirm_password
+                password:req.body.password
             })
+            console.log(registerEmployee)
+
+            const salt = await bcrypt.genSalt(10);
+            // console.log(salt)
+            registerEmployee.password = await bcrypt.hash(req.body.password, salt); 
+            console.log(salt, registerEmployee.password)
+
             const result = await registerEmployee.save()
-            console.log(result,registerEmployee,req.body.firstname)
-            
-            res.status(201).render('signup.hbs')
-            // alert("Done");
+
+            res.status(200).json({
+                data: user,
+                // errors: [],
+                message: 'Signed Up successfully!!'
+            });
+
+            // res.status(201).render('signup.hbs')
         }
         else{
             res.send("Password Mismatched")

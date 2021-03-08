@@ -21,16 +21,20 @@ const adminSchema = mongoose.Schema({
     confirm_password:{
         type:String,
         require:true
-    }
+    },
+    // createdAt: {
+    //     type: Date,
+    //     default: Date.now()
+    // }
 })
 
-const userSchema = mongoose.Schema({
-    username: String,
-    useremail: String,
-    googleId: String,
-    thumbnail: String
-});
+// const userSchema = mongoose.Schema({
+//     username: String,
+//     useremail: String,
+//     googleId: String,
+//     thumbnail: String
+// });
 
-module.exports = mongoose.model('user', userSchema);    //google login
+// module.exports = mongoose.model('user', userSchema);    //google login
 
-// module.exports = mongoose.model("Register", adminSchema);     //form login or signup
+module.exports = mongoose.model("Register", adminSchema);     //form login or signup

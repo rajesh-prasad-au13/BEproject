@@ -95,7 +95,8 @@ var employeeSchema = new mongoose.Schema({
                 throw new Error("CHeck the number of digits entered")
             }
         }
-    }
+    },
+    
 })
 
 module.exports = mongoose.model('new',employeeSchema)
