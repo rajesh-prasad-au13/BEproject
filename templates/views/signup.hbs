@@ -12,6 +12,7 @@
 </head>
 
 <body>
+
     <nav class="navbar navbar-light bg-light">
         <a class="navbar-brand" href="#">
             <img src="https://media-exp1.licdn.com/dms/image/C4D0BAQF8_tltlaNCkA/company-logo_200_200/0/1564162838121?e=2159024400&v=beta&t=KqzHHXQAjvbIhgJXuxklcfY3CbxFyjUWJu6T3TN4y18"
@@ -21,12 +22,11 @@
         <button  type="button" class="btn btn-primary"><a style="color: black;" href="http://localhost:5000/login">Login</a></button>
     </nav>
 
-    <h2 class="text-center">Admin Register </h2>
+    <h2 class="text-center"> Admin Register </h2>
 
     <div class="container">
         <div class="row text-white">
             <div class="col-lg-6 col-sm-10 mx-auto">
-                {{!-- <button class="btn btn-primary" >LOGIN</a></button> --}}
                 <form class="justify-content-center" action="/signup" method='POST'>
                     <div class="form-group">
                         <label for="InputFirstName"></label>
@@ -39,17 +39,10 @@
                         <input type="text" class="form-control" id="InputLastName" name="lastname" placeholder="Enter Last Name" required value = {{lastname}}>
                     </div>
 
-                    <!-- <div class="form-group">
-                            <label for="InputUserName">First Name</label>
-                            <input type="text" class="form-control" id="InputUserName" placeholder="Enter User Name" />
-                        </div> -->
 
                     <div class="form-group">
                         <label for="InputEmail">Email address</label>
                         <input type="email" class="form-control" id="InputEmail" name="email" placeholder="Enter email" required value = {{email}}>
-                        <!-- <small id="emailHelp" class="form-text text-muted"
-                                        >We'll never share your email with anyone else.</small
-                                        > -->
                     </div>
 
                     <div class="form-group">
@@ -71,6 +64,7 @@
             </div>
         </div>
     </div>
+
 </body>
 
 </html>

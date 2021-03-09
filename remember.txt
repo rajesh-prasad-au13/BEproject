@@ -9,3 +9,34 @@ app.get('/', async (req, res) => {
     res.status(201).render('home.ejs',{employeeGoogleSignin})
     // res.render('home.ejs', { user: req.user });
 });
+
+
+
+// app.get('/admins',(req,res) => {
+//     console.log(admin)
+//     res.json(admin)
+// })
+
+// app.post('/admins', async (req,res) => {
+//     console.log('heree')
+//     try{
+//         if(req.body.password == req.body.confirm_password){
+//             const registerEmployee = new mySchema({
+//                 firstname : req.body.firstname,
+//                 lastname:req.body.lastname,
+//                 email:req.body.email,
+//                 password:req.body.password,
+//                 confirm_password:req.body.confirm_password
+//             })
+//             const result = await registerEmployee.save()
+//             console.log(result,registerEmployee,req.body.firstname)
+//             res.status(201).render('index.hbs')
+//         }
+//         else{
+//             res.send("Password Mismatched")
+//         }
+//     }
+//     catch(error){
+//         res.status(400).send(error)
+//     }
+// })

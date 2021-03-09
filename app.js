@@ -4,18 +4,21 @@ const cookieSession = require('cookie-session');
 const passport = require('passport');
 const authRoutes = require('./routes/auth-routes');
 const profileRoutes = require('./routes/profile-routes');
-const passportSetup = require('./config/passport-setup');
-const mongoose = require('mongoose');
+// const passportSetup = require('./config/passport-setup');
+// const mongoose = require('mongoose');
 const keys = require('./config/keys');
 const path = require('path')
 const employeeRouter = require('./controllers/employeeController')
-const exphbs = require('express-handlebars')
+// const exphbs = require('express-handlebars')
 const hbs = require('hbs')
 const bodyparser = require('body-parser')
-const mySchema = require("./src/models/adminschema")
 
-const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken');
+const adminSignup = require('./controllers/adminSignupController')
+const adminLogin = require('./controllers/adminloginController')
+const home = require('./controllers/adminhomePage')
+
+// const bcrypt = require('bcrypt')
+// const jwt = require('jsonwebtoken');
 // const { check, validationResult } = require('express-validator')
 
 const dotenv = require("dotenv");
@@ -23,22 +26,16 @@ dotenv.config();
 
 const auth = require('./routes/authLogin')
 
-const router = express.Router()
-const cloudinary = require("./utils/cloudinary");
-const upload = require("./utils/multer");
-const Employee = require("./src/models/employeeschema");
+// const router = express.Router()
+// const cloudinary = require("./utils/cloudinary");
+// const upload = require("./utils/multer");
+// const Employee = require("./src/models/employeeschema");
 // const employeeGoogle= require("./src/models/employeeGoogleSigninSchema");
 
 require('./controllers/employeeController')
 require("./src/db/conn")
-// require('./src/db/db')
+
 const port = 5000
-
-var MongoClient = require('mongodb').MongoClient;
-
-// let users = []
-
-let admin = []
 
 const static_path = path.join(__dirname, "./public")
 const template_path = path.join(__dirname, "./templates/views")
@@ -49,15 +46,20 @@ hbs.registerPartials(partials_path)
 
 app.use(express.static(static_path))
 
-app.set("view engine", "hbs")
+app.set("view engine", "hbs");
 app.set('view engine', 'ejs');
 app.set("views", template_path)
 
+
+app.use('/', adminSignup)
+app.use('/', adminLogin)
+app.use('/', home)
+app.use('/user', require('./cloudinary_image_upload/routes/user'))
 app.use('/employee', employeeRouter)
+
+
 app.use(bodyparser.json())
 app.use(bodyparser.urlencoded({extended:true})) 
-// Route
-app.use('/user', require('./cloudinary_image_upload/routes/user'))
 
 // set up session cookies
 app.use(cookieSession({
@@ -74,291 +76,21 @@ app.use(passport.session());
 app.use('/auth', authRoutes);
 app.use('/profile', profileRoutes);
 
+
 // create home route
 app.get('/', (req, res) => {
-    // console.log(req)
+    console.log('req.user',req.user)
     res.render('home.ejs', { user: req.user });
 });
 
-app.get('/home', (req, res) => {
-    console.log(req.body)
-    var url = "mongodb://localhost:27017/";
-    MongoClient.connect(url, function(err, db) {
-    if (err) throw err;
-    var dbo = db.db("employees");
-    dbo.collection("registers").findOne({}, function(err, result) {
-        if (err) throw err;
-        console.log(result)
-        
-        //object to array
-        const propertyNames = Object.values(result);
-        console.log(propertyNames);
-        const data = {propertyNames}
-        
-        console.log(data)
-        res.render('home.hbs',data) 
-        
-        db.close()
-       });
-    });
-    // res.end() 
-});
 
 app.get('/see', auth, (req, res) => {
     res.json("Welcome to Your Profile Section")
 });
 
 
-app.get('/login', (req, res) => {
-  res.render('login.hbs');
-});
-
-
-app.post('/login',(req,res) => {
-    console.log(req.body)
-    console.log(req.header.token)
-    var url = "mongodb://localhost:27017/";
-    MongoClient.connect(url, function(err, db) {
-    if (err) throw err;
-    var dbo = db.db("employees");
-    dbo.collection("admins").findOne({}, function(err, result) {
-        if (err) throw err;
-
-        console.log(req.body.password, result.password)
-        if(result){
-            jwt.sign(
-                { result: { email: result.email } },
-                'jwt_secret',
-                (err, token) => {
-                    if (err) throw err;
-                    console.log('token',token)
-                    req.header.token = token
-                    console.log('heree')
-                    res.status(200).json({
-                        data: {token},
-                        errors:[],
-                        message: 'Loggin success!!'
-                    })
-                }
-            )
-            db.close();
-        }
-        else{
-            res.status(200).json({
-                data: {},
-                // errors:[],
-                message: 'No such User'
-            })
-            db.close();
-        }
-    });
-    });
-    // res.end()
-} );
-
-
-app.get('/signup',(req,res) => {
-    const data = {
-        admin,
-        firstname: '',
-        lastname:'',
-        email: '',
-        password: '',
-        confirm_password:''
-      }
-    res.render(template_path +'/signup.hbs',data);      //.hbs extension is not required
-})
-
-
-app.post('/signup', async (req,res) => {
-    // if (!errors.isEmpty()) {
-    //     return res.status(400).json({
-    //         data: {},
-    //         errors: errors.array(),
-    //         message: 'Unable to create user'
-    //     });
-    // }
-    // try {
-    //     let user = await User.findOne({ email: req.body.email });
-    //     if (user) {
-    //         return res.status(400).json({
-    //             data: {},
-    //             errors: [{
-    //                 value: req.body.email,
-    //                 msg: "User already exists.",
-    //                 param: "email",
-    //                 location: "body"
-    //             }],
-    //             message: 'Unable to create user'
-    //         })
-    //     }
-    //     user = new User({
-    //         firstName: req.body.firstName,
-    //         lastName: req.body.lastName || '',
-    //         email: req.body.email
-    //     });
-    //     const salt = await bcrypt.genSalt(10);
-    //     user.password = await bcrypt.hash(req.body.password, salt);
-
-    //     await user.save();
-
-    //     res.status(200).json({
-    //         data: user,
-    //         errors: [],
-    //         message: 'Signed Up successfully!!'
-    //     });
-    // } catch (e) {
-    //     console.log(e.message);
-    //     res.status(500).send('Error in Saving');
-    // }
-    console.log(req.body,req.body.password == req.body.confirm_password)
-    try{
-        if(req.body.password == req.body.confirm_password){
-            console.log("here")
-            const registerEmployee = new mySchema({
-                firstname : req.body.firstname,
-                lastname:req.body.lastname,
-                email:req.body.email,
-                password:req.body.password
-            })
-            console.log(registerEmployee)
-
-            const salt = await bcrypt.genSalt(10);
-            // console.log(salt)
-            registerEmployee.password = await bcrypt.hash(req.body.password, salt); 
-            console.log(salt, registerEmployee.password)
-
-            const result = await registerEmployee.save()
-
-            res.status(200).json({
-                data: user,
-                // errors: [],
-                message: 'Signed Up successfully!!'
-            });
-
-            // res.status(201).render('signup.hbs')
-        }
-        else{
-            res.send("Password Mismatched")
-        }
-    }
-    catch(error){
-        res.status(400).send(error)
-    }
-} )
-
-
-app.get('/admins',(req,res) => {
-    console.log(admin)
-    res.json(admin)
-})
-
-app.post('/admins', async (req,res) => {
-    console.log('heree')
-    try{
-        if(req.body.password == req.body.confirm_password){
-            const registerEmployee = new mySchema({
-                firstname : req.body.firstname,
-                lastname:req.body.lastname,
-                email:req.body.email,
-                password:req.body.password,
-                confirm_password:req.body.confirm_password
-            })
-            const result = await registerEmployee.save()
-            console.log(result,registerEmployee,req.body.firstname)
-            res.status(201).render('index.hbs')
-        }
-        else{
-            res.send("Password Mismatched")
-        }
-    }
-    catch(error){
-        res.status(400).send(error)
-    }
-})
-
-
-
-
-
-// router.get('/', (req, res) => {
-//     res.render("employee/add-edit-employee", {
-//         viewTitle: "Insert Employee"
-//     });
-// });
-
-
-// router.post("/employee", upload.single("image"), async (req, res) => {
-//   try {
-//     // Upload image to cloudinary
-//     console.log(req.body)
-//     // console.log(res)
-//     const result = await cloudinary.uploader.upload(req.file.path);
-//     // res.json(result)
-//     // Create new user
-//     // console.log(req.body)
-//     let employee = new Employee({
-//       firstname: req.body.firstname,
-//       lastname: req.body.lastname,
-//       email: req.body.email,
-//       phone: req.body.email,
-//       phone: req.body.address,
-//       pancard: req.body.pancard,
-//       cloudinary_id: result.secure_url,
-//       basicsalary: req.body.basicsalary,
-//       da: req.body.da,
-//       hra: req.body.hra,
-//       medical: req.body.medical,
-//       proftax: req.body.proftax,
-//       incometax: req.body.incometax,
-//       providentfund: req.body.providentfund
-//     });
-//     // Save user
-//     await employee.save();
-//     res.json(employee);
-//   } catch (err) {
-//     console.log(err);
-//   }
-// });
-
 app.listen(port, () => {
   console.log(`Server running at ${port}`) //5000
 })
 
 
-
-
-
-
-
-
-// // set view engine
-// app.set('view engine', 'ejs');
-
-// // set up session cookies
-// app.use(cookieSession({
-//     maxAge: 24 * 60 * 60 * 1000,
-//     keys: [keys.session.cookieKey]
-// }));
-
-// // initialize passport
-// app.use(passport.initialize());
-// app.use(passport.session());
-
-// // connect to mongodb
-// mongoose.connect(keys.mongodb.dbURI, () => {
-//     console.log('connected to mongodb');
-// });
-
-// // set up routes
-// app.use('/auth', authRoutes);
-// app.use('/profile', profileRoutes);
-
-// // create home route
-// app.get('/', (req, res) => {
-//     res.render('home', { user: req.user });
-// });
-
-// app.listen(5000, () => {
-//     console.log('app now listening for requests on port 5000');
-// });
