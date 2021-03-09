@@ -16,7 +16,7 @@ const mySchema = require("./src/models/adminschema")
 
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken');
-const { check, validationResult } = require('express-validator')
+// const { check, validationResult } = require('express-validator')
 
 const dotenv = require("dotenv");
 dotenv.config();
@@ -58,19 +58,17 @@ app.use(bodyparser.json())
 app.use(bodyparser.urlencoded({extended:true})) 
 // Route
 app.use('/user', require('./cloudinary_image_upload/routes/user'))
+
 // set up session cookies
 app.use(cookieSession({
   maxAge: 24 * 60 * 60 * 1000,
   keys: [keys.session.cookieKey]
 }));
+
 // initialize passport
 app.use(passport.initialize());
 app.use(passport.session());
 
-// connect to mongodb
-// mongoose.connect(keys.mongodb.dbURI, () => {
-//   console.log('connected to mongodb');
-// });
 
 // set up routes
 app.use('/auth', authRoutes);
@@ -105,30 +103,9 @@ app.get('/home', (req, res) => {
     });
     // res.end() 
 });
+
 app.get('/see', auth, (req, res) => {
-    // console.log(req.header.token)
-    res.json("Welcome to Profile Section")
-    // console.log(req.body)
-    // var url = "mongodb://localhost:27017/";
-    // MongoClient.connect(url, function(err, db) {
-    // if (err) throw err;
-    // var dbo = db.db("employees");
-    // dbo.collection("registers").findOne({}, function(err, result) {
-    //     if (err) throw err;
-    //     console.log(result)
-        
-    //     //object to array
-    //     const propertyNames = Object.values(result);
-    //     console.log(propertyNames);
-    //     const data = {propertyNames}
-        
-    //     console.log(data)
-    //     res.render('home.hbs',data) 
-        
-    //     db.close()
-    //    });
-    // });
-    // res.end() 
+    res.json("Welcome to Your Profile Section")
 });
 
 
@@ -138,14 +115,13 @@ app.get('/login', (req, res) => {
 
 
 app.post('/login',(req,res) => {
-
     console.log(req.body)
     console.log(req.header.token)
     var url = "mongodb://localhost:27017/";
     MongoClient.connect(url, function(err, db) {
     if (err) throw err;
     var dbo = db.db("employees");
-    dbo.collection("registers").findOne({}, function(err, result) {
+    dbo.collection("admins").findOne({}, function(err, result) {
         if (err) throw err;
 
         console.log(req.body.password, result.password)
@@ -157,28 +133,14 @@ app.post('/login',(req,res) => {
                     if (err) throw err;
                     console.log('token',token)
                     req.header.token = token
-                    // console.log('req.header',req.header)
                     console.log('heree')
                     res.status(200).json({
-                        // req.header.token:token,
                         data: {token},
                         errors:[],
                         message: 'Loggin success!!'
                     })
                 }
             )
-            // if(req.body.password == result.password){
-            //     // console.log("Login Success")
-                
-            // }
-            // else{
-            //     // console.log("Login Failed")
-            //     res.status(200).json({
-            //         data: {},
-            //         // errors:[],
-            //         message: 'Loggin failed'
-            //     })
-            // }
             db.close();
         }
         else{
